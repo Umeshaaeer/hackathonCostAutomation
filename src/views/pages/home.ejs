@@ -286,6 +286,7 @@ div img {
   <script>
     $(document).ready(function () {
       GetRTSData();
+      ///setTimeout(GetRTSData, 2000);
       //GetBlissData();
       function addAllColumnHeaders(myList, Id) {
         var columnSet = [];
@@ -323,8 +324,7 @@ div img {
 
       function GetRTSData() {
         let todos = [];
-        alert('1');
-
+                
         $.ajax({
           url: "/RTSData",
           method: "GET",
@@ -333,7 +333,7 @@ div img {
             // alert('user: ' + JSON.stringify(response.recordset[0].userid));
 
             todos = JSON.stringify(response);
-            alert('Excel' + todos);
+            //alert('Excel' + todos);
             $("#main").empty();
             //                      alert('before loop');
 
@@ -437,7 +437,7 @@ div img {
             // alert('user: ' + JSON.stringify(response.recordset[0].userid));
 
             todos = JSON.stringify(response);
-            alert('Excel' + todos);
+            //alert('Excel' + todos);
             $("#main").empty();
             //                      alert('before loop');
 
@@ -541,7 +541,7 @@ div img {
 
       function GetBlissData() {
         let todos = [];
-        alert('1');
+        //alert('1');
 
         $.ajax({
           url: "/BlissData",
@@ -551,7 +551,7 @@ div img {
             // alert('user: ' + JSON.stringify(response.recordset[0].userid));
 
             todos = JSON.stringify(response);
-            alert('Excel' + todos);
+            //alert('Excel' + todos);
             $("#main").empty();
             //                      alert('before loop');
 
