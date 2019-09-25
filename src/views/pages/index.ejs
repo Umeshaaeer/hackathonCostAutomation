@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AWS Data</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        label:after {
+            content: ": ";
+        }
+
+        label {
+            background-color: green;
+            color: whitesmoke;
+            font-weight: bold;
+            padding: 4px;
+            text-transform: uppercase;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: xx-small;
+            text-align: center;
+        }
+
+        label.error {
+            display: block;
+            /* change the display to block*/
+            width: 200px;
+            /*if necessary*/
+            font-size: 11px;
+            background-color: #cc0000;
+            color: #FFFFFF;
+            padding: 3px;
+            margin-left: 5px;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 200px;
+            background-color: #f1f1f1;
+        }
+
+        li a {
+            display: block;
+            color: #000;
+            padding: 8px 16px;
+            text-decoration: none;
+        }
+
+        /* Change the link color on hover */
+
+        li a:hover {
+            background-color: #555;
+            color: white;
+        }
+
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+            height: 100%;
+        }
+
+        tr {
+            height: 40%;
+            text-align: center;
+        }
+
+        th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+            height: 40%;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+            height: 40%;
+            text-align: center;
+        }
+
+        th {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            text-align: center;
+            background-color: #3b5998;
+            color: white;
+            height: 40%;
+        }
+    </style>
+    <script>
+
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <form action="#" method="post" name="costEstimation" id="idCostEstimation">
+        <h1 class="text-center">AWS Live - Travelex Retail</h1>
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                <div>
+                    <table id="jsonTable" border="1" style="border-collapse: collapse;" cellpadding="5">
+                        <thead id="av">
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                <div>
+                    <table id="jsonTableBliss" border="1" style="border-collapse: collapse;" cellpadding="5">
+                        <thead id="bv">
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <div id="main"></div>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.12.0/jquery.validate.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            GetRTSData();
+            //GetBlissData();
+            function addAllColumnHeaders(myList, Id) {
+                var columnSet = [];
+                var headerTr$ = $('<tr style="height:59px;text-align: center"></tr>');
+
+                for (var i = 0; i < myList.length; i++) {
+                    columnSet.push(myList[i]);
+                    headerTr$.append($('<th style="height:40px;text-align: center"></th>').html(myList[i]));
+                }
+
+
+                //$("#av").append(headerTr$);
+                if (Id == "1") {
+                    $("#av").append(headerTr$);
+                } else {
+                    //$("#av").append($('<tr style="height:59px;text-align: center"></tr><tr style="height:59px;text-align: center"></tr>'));
+                    //$("#bv").append(headerTr$);
+                }
+
+
+                return columnSet;
+            }
+
+            function addAllColumnHeaders11(myList, Id) {
+                var columnSet = [];
+                var headerTr$ = $('<tr style="height:59px;text-align: center"></tr>');
+                for (var i = 0; i < myList.length; i++) {
+                    columnSet.push(myList[i]);
+                    headerTr$.append($('<th style="height:40px;text-align: center"></th>').html(myList[i]));
+                }
+
+                $("#bv").append(headerTr$);
+                return columnSet;
+            }
+
+            function GetRTSData() {
+                let todos = [];
+                alert('1');
+
+                $.ajax({
+                    url: "/RTSData",
+                    method: "GET",
+                    success: function (response) {
+                        // alert('Response: ' + JSON.stringify(response));
+                        // alert('user: ' + JSON.stringify(response.recordset[0].userid));
+
+                        todos = JSON.stringify(response);
+                        alert('Excel' + todos);
+                        $("#main").empty();
+                        //                      alert('before loop');
+
+                        var data = ['Environment', 'Application', 'WeekDay Start', 'Weekday Stop', 'Weekend Start', 'Weekend Stop']; //, 'Current Status'];
+
+                        var table = $("<table />");
+                        table[0].border = "1";
+
+                        var row$;
+                        var columns = addAllColumnHeaders(data, '1');
+                        //alert('columnlength' + columns.length);
+
+                        row$ = $('<tr class="blank_row"><td bgcolor="orange" colspan="6">RTS</td></tr>');
+                            $("#jsonTable").append(row$);
+
+
+                        var i = 0;
+                        response.Sheet1.forEach(todo => {
+                            if (i == 0) {
+                                i = i + 1;
+                                return false;
+                            }
+                            row$ = $('<tr></tr>');
+                            //alert('inside foreach');
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                //alert('colindex'+ colIndex);
+                                i = i + 1;
+                                //alert('i:'+i);
+                                switch (colIndex) {
+                                    case 0:
+                                        // code block
+                                        // alert(0);
+                                        //alert(JSON.stringify(todo.userid.trim()));
+                                        //alert(todo.userid.trim());
+                                        var cellValue = todo.A.trim();
+                                        //var cellValue = eval(strLink);
+                                        //alert(cellValue);
+                                        //var cellValue = JSON.stringify(todo.userid.trim());
+
+                                        break;
+                                    case 1:
+                                        // code block
+                                        //alert(1);
+                                        var cellValue = todo.B.trim();
+                                        //alert('1:'+cellValue);
+                                        break;
+                                    case 2:
+                                        // code block
+                                        var cellValue = todo.C.trim();
+                                        break;
+                                    case 3:
+                                        // code block
+                                        var cellValue = todo.D.trim();
+                                        break;
+                                    case 4:
+                                        // code block
+                                        var cellValue = todo.E.trim();
+                                        break;
+                                    case 5:
+                                        // code block
+                                        var cellValue = todo.F.trim();
+                                        break;
+                                    // case 6:
+                                    //     if (i == 2) {
+                                    //         //                     alert('if');
+                                    //         var cellValue = '<td style="font-size:150%;font-weight:bold;color:red;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                    //     } else {
+                                    //         //                   alert('else');
+                                    //         var cellValue = '<td style="font-size:150%;font-weight:bold;color:green;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                    //     }
+                                    //     break;
+                                    default:
+                                        // code block
+                                        var cellValue = 'No Data';
+                                        break;
+                                }
+
+                                if (cellValue == null) { cellValue = ""; }
+                                row$.append($('<td></td>').html(cellValue));
+
+                            }
+                            //                           row$.append($('<td><label><input type="radio" name="optradio">TIKI</label><td>').html(cellValue));
+                            $("#jsonTable").append(row$);
+                        });
+
+                    },
+                    error: function (error) {
+                        alert('err:' + error);
+                        console.log(error)
+                    }
+
+
+
+                })
+
+                $.ajax({
+                    url: "/BlissData",
+                    method: "GET",
+                    success: function (response) {
+                        // alert('Response: ' + JSON.stringify(response));
+                        // alert('user: ' + JSON.stringify(response.recordset[0].userid));
+
+                        todos = JSON.stringify(response);
+                        alert('Excel' + todos);
+                        $("#main").empty();
+                        //                      alert('before loop');
+
+                        var data = ['Environment', 'Application', 'WeekDay Start', 'Weekday Stop', 'Weekend Start', 'Weekend Stop'];//', 'Current Status'];
+
+                        //var table = $("<table />");
+                        //table[0].border = "1";
+
+                        var row$;
+                        var columns = addAllColumnHeaders(data, '2');
+                        //alert('columnlength' + columns.length);
+
+                        var i = 0;
+                        row$ = $('<tr class="blank_row"><td bgcolor="orange" colspan="6">BLISS</td></tr>');
+                            $("#jsonTable").append(row$);
+
+                        response.Sheet1.forEach(todo => {
+                            if (i == 0) {
+                                i = i + 1;
+                                return false;
+                            }
+        //                     <tr class="blank_row">
+        //     <td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+        // </tr>               
+                            row$=$('<tr></tr>');
+                            //alert('inside foreach');
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                //alert('colindex'+ colIndex);
+                                i = i + 1;
+                                //alert('i:'+i);
+                                switch (colIndex) {
+                                    case 0:
+                                        // code block
+                                        // alert(0);
+                                        //alert(JSON.stringify(todo.userid.trim()));
+                                        //alert(todo.userid.trim());
+                                        var cellValue = todo.A.trim();
+                                        //var cellValue = eval(strLink);
+                                        //alert(cellValue);
+                                        //var cellValue = JSON.stringify(todo.userid.trim());
+
+                                        break;
+                                    case 1:
+                                        // code block
+                                        //alert(1);
+                                        var cellValue = todo.B.trim();
+                                        //alert('1:'+cellValue);
+                                        break;
+                                    case 2:
+                                        // code block
+                                        var cellValue = todo.C.trim();
+                                        break;
+                                    case 3:
+                                        // code block
+                                        var cellValue = todo.D.trim();
+                                        break;
+                                    case 4:
+                                        // code block
+                                        var cellValue = todo.E.trim();
+                                        break;
+                                    case 5:
+                                        // code block
+                                        var cellValue = todo.F.trim();
+                                        break;
+                                    // case 6:
+                                    //     if (i == 2) {
+                                    //         //                     alert('if');
+                                    //         var cellValue = '<td style="font-size:150%;font-weight:bold;color:red;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                    //     } else {
+                                    //         //                   alert('else');
+                                    //         var cellValue = '<td style="font-size:150%;font-weight:bold;color:green;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                    //     }
+                                    //     break;
+                                    default:
+                                        // code block
+                                        var cellValue = 'No Data';
+                                        break;
+                                }
+
+                                if (cellValue == null) { cellValue = ""; }
+                                row$.append($('<td></td>').html(cellValue));
+
+                            }
+                            //                           row$.append($('<td><label><input type="radio" name="optradio">TIKI</label><td>').html(cellValue));
+                            $("#jsonTable").append(row$);
+                        });
+
+                    },
+                    error: function (error) {
+                        alert('err:' + error);
+                        console.log(error)
+                    }
+
+
+
+                })
+
+            }
+
+            function GetBlissData() {
+                let todos = [];
+                alert('1');
+
+                $.ajax({
+                    url: "/BlissData",
+                    method: "GET",
+                    success: function (response) {
+                        // alert('Response: ' + JSON.stringify(response));
+                        // alert('user: ' + JSON.stringify(response.recordset[0].userid));
+
+                        todos = JSON.stringify(response);
+                        alert('Excel' + todos);
+                        $("#main").empty();
+                        //                      alert('before loop');
+
+                        var data = ['Environment', 'Application', 'WeekDay Start', 'Weekday Stop', 'Weekend Start', 'Weekend Stop', 'Current Status'];
+
+                        var table = $("<table />");
+                        table[0].border = "1";
+
+                        var row$;
+                        var columns = addAllColumnHeaders11(data, '1');
+                        //alert('columnlength' + columns.length);
+
+                        var i = 0;
+                        response.Sheet1.forEach(todo => {
+                            if (i == 0) {
+                                i = i + 1;
+                                return false;
+                            }
+                            row$ = $('<tr></tr>');
+                            //alert('inside foreach');
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                //alert('colindex'+ colIndex);
+                                i = i + 1;
+                                //alert('i:'+i);
+                                switch (colIndex) {
+                                    case 0:
+                                        // code block
+                                        // alert(0);
+                                        //alert(JSON.stringify(todo.userid.trim()));
+                                        //alert(todo.userid.trim());
+                                        var cellValue = todo.A.trim();
+                                        //var cellValue = eval(strLink);
+                                        //alert(cellValue);
+                                        //var cellValue = JSON.stringify(todo.userid.trim());
+
+                                        break;
+                                    case 1:
+                                        // code block
+                                        //alert(1);
+                                        var cellValue = todo.B.trim();
+                                        //alert('1:'+cellValue);
+                                        break;
+                                    case 2:
+                                        // code block
+                                        var cellValue = todo.C.trim();
+                                        break;
+                                    case 3:
+                                        // code block
+                                        var cellValue = todo.D.trim();
+                                        break;
+                                    case 4:
+                                        // code block
+                                        var cellValue = todo.E.trim();
+                                        break;
+                                    case 5:
+                                        // code block
+                                        var cellValue = todo.F.trim();
+                                        break;
+                                    case 6:
+                                        if (i == 2) {
+                                            //                     alert('if');
+                                            var cellValue = '<td style="font-size:150%;font-weight:bold;color:red;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                        } else {
+                                            //                   alert('else');
+                                            var cellValue = '<td style="font-size:150%;font-weight:bold;color:green;"><span>&#10050;</span></td>'; //'<td align="center" style="text-align:center; font-size:150%; font-weight:bold; color:green;">&#x2714</td>'//<td><label name="lblName" id="idStatus">Running</label><td>';
+                                        }
+                                        break;
+                                    default:
+                                        // code block
+                                        var cellValue = 'No Data';
+                                        break;
+                                }
+
+                                if (cellValue == null) { cellValue = ""; }
+                                row$.append($('<td></td>').html(cellValue));
+
+                            }
+                            //                           row$.append($('<td><label><input type="radio" name="optradio">TIKI</label><td>').html(cellValue));
+                            $("#jsonTableBliss").append(row$);
+                        });
+
+                    },
+                    error: function (error) {
+                        alert('err:' + error);
+                        console.log(error)
+                    }
+                })
+            }
+        })
+
+
+    </script>
+
+</body>
+
+
+</html>
